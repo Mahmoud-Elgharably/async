@@ -1,10 +1,16 @@
 /* Global Variables */
+
+// Personal API Key for OpenWeatherMap API
+const apiKey = "60bd4f2a2857e2ab21bccedae04b6c57&units=imperial"; //Fahrenheit
+//const apiKey = "60bd4f2a2857e2ab21bccedae04b6c57&units=metric"; //Celsius
+//const apiKey = "60bd4f2a2857e2ab21bccedae04b6c57"; //Kelvins
+
+// const apiKey = "60bd4f2a2857e2ab21bccedae04b6c57&units=metric";
 let baseURL = "https://api.openweathermap.org/data/2.5/weather?zip=";
-let apiKey = "60bd4f2a2857e2ab21bccedae04b6c57";
 
 // Create a new date instance dynamically with JS
 let d = new Date();
-let newDate = d.getMonth() + "." + d.getDate() + "." + d.getFullYear();
+let newDate = d.getMonth() + 1 + "." + d.getDate() + "." + d.getFullYear();
 
 // Create a new date instance dynamically with JS
 document.getElementById("generate").addEventListener("click", performAction);
@@ -59,7 +65,7 @@ function performAction(e) {
 // Async GET to retrive Temerature
 const getTemperature = async (baseURL, apiKey) => {
   const zip = document.getElementById("zip").value;
-  const res = await fetch(`${baseURL}${zip}&appid=${apiKey}&units=metric`);
+  const res = await fetch(`${baseURL}${zip}&appid=${apiKey}`);
   try {
     const data = await res.json();
     return data;
@@ -110,11 +116,12 @@ const postData = async (url = "", data = {}) => {
 const updateUI = async () => {
   const request = await fetch("/all");
   try {
+    // Transform into JSON
     const allData = await request.json();
-    //console.log(allData);
-    document.getElementById("date").innerHTML = allData.dayDate;
-    document.getElementById("temp").innerHTML = allData.temperature;
+    // Write updated data to DOM elements    
+    document.getElementById("temp").innerHTML = Math.round(allData.temperature) + ' degrees';
     document.getElementById("content").innerHTML = allData.feeling;
+    document.getElementById("date").innerHTML = allData.dayDate;
   } catch (error) {
     console.log("error", error);
     throw error;
